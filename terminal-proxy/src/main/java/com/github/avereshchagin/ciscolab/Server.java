@@ -1,34 +1,31 @@
 package com.github.avereshchagin.ciscolab;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.ServerSocket;
-import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
 
-    public static final int SERVER_PORT = 8338;
+    private static final int SERVER_PORT = 8338;
+    private static final int NUMBER_OF_THREADS = 12;
 
     private final ServerSocket serverSocket;
+    private final ExecutorService pool;
 
     public Server() throws IOException {
         serverSocket = new ServerSocket(SERVER_PORT);
+        pool = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
     }
 
     public void loop() {
-        while (true) {
-            try {
-                Socket socket = serverSocket.accept();
-                InputStream in = socket.getInputStream();
-                OutputStream out = socket.getOutputStream();
-                int data;
-                while (-1 != (data = in.read())) {
-                    out.write(data);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            while (true) {
+                pool.execute(new ConnectionHandler(serverSocket.accept()));
             }
+        } catch (IOException e) {
+            pool.shutdown();
+            e.printStackTrace();
         }
     }
 }
