@@ -19,14 +19,8 @@ public class StreamProxy implements Runnable {
         int symbol;
         try {
             while (-1 != (symbol = in.read())) {
-                if (symbol == '\n') {
-                    out.write('\r');
-                }
                 out.write(symbol);
                 out.flush();
-
-                System.out.write(symbol);
-                System.out.flush();
             }
         } catch (IOException e) {
             e.printStackTrace();
