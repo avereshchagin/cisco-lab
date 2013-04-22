@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 public class TelnetPanel extends JPanel implements KeyListener {
@@ -13,7 +15,7 @@ public class TelnetPanel extends JPanel implements KeyListener {
     public TelnetPanel(String hostName, int port) {
         super(new BorderLayout());
         JTextArea textArea = new JTextArea();
-        textArea.setFocusable(false);
+//        textArea.setFocusable(false);
         textArea.setLineWrap(false);
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -21,9 +23,8 @@ public class TelnetPanel extends JPanel implements KeyListener {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         add(scrollPane, BorderLayout.CENTER);
 
-        addKeyListener(this);
-        setFocusable(true);
-        requestFocus();
+        textArea.addKeyListener(this);
+        textArea.requestFocus();
 
         telnetClient = new TelnetClient(textArea, hostName, port);
         telnetClient.start();
