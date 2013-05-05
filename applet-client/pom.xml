@@ -25,6 +25,26 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jarsigner-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>sign</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <keystore>${jarsigner.keystore}</keystore>
+                    <alias>${jarsigner.alias}</alias>
+                    <storepass>${jarsigner.password}</storepass>
+                    <keypass>${jarsigner.password}</keypass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
