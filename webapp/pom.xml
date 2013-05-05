@@ -55,13 +55,13 @@
                     <terse>false</terse>
                     <echo>true</echo>
                     <debug>true</debug>
-                    <glassfishDirectory>/home/aleksandr/glassfish3/</glassfishDirectory>
-                    <user>admin</user>
-                    <adminPassword>ibts2013!</adminPassword>
+                    <glassfishDirectory>${glassfish.glassfishDirectory}</glassfishDirectory>
+                    <user>${glassfish.user}</user>
+                    <adminPassword>${glassfish.adminPassword}</adminPassword>
                     <domain>
-                        <name>domain1</name>
-                        <host>91.238.230.93</host>
-                        <adminPort>4848</adminPort>
+                        <name>${glassfish.domain.name}</name>
+                        <host>${glassfish.domain.host}</host>
+                        <adminPort>${glassfish.domain.adminPort}</adminPort>
                     </domain>
                     <components>
                         <component>
