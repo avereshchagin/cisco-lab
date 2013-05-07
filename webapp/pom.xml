@@ -43,7 +43,7 @@
                                 </artifactItem>
                             </artifactItems>
                             <stripVersion>true</stripVersion>
-                            <outputDirectory>${project.build.directory}/${project.artifactId}</outputDirectory>
+                            <outputDirectory>${project.build.directory}/${project.artifactId}/console</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
