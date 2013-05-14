@@ -75,25 +75,43 @@ public class TelnetClient extends Thread {
 
     }
 
+    private static Pair<String, Integer> preprocessText(String source) {
+        int shift = 0;
+        int pos = 0;
+        char[] result = new char[source.length()];
+        for (int i = 0; i < source.length(); i++) {
+            char ch = source.charAt(i);
+            if (ch == '\u0007') {
+                continue;
+            }
+            if (ch == '\b') {
+                if (pos == 0) {
+                    shift--;
+                } else {
+                    pos--;
+                }
+                continue;
+            }
+            result[pos] = ch;
+            pos++;
+        }
+        return new Pair<String, Integer>(String.copyValueOf(result, 0, pos), shift);
+    }
+
     private void appendText(final String text) {
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 // Must be executed in UI thread
                 @Override
                 public void run() {
-                    String appendingText;
-                    if (text.startsWith("\b")) {
+                    Pair<String, Integer> p = preprocessText(text);
+                    String appendingText = p.getFirst();
+                    int shift = p.getSecond();
+                    if (shift < 0) {
                         int position = textArea.getCaretPosition();
-                        textArea.setCaretPosition(position - 1);
-                        textArea.replaceRange("", position - 1, position);
-                        appendingText = text.substring(1);
-                    } else {
-                        appendingText = text;
+                        textArea.setCaretPosition(position + shift);
+                        textArea.replaceRange("", position + shift, position);
                     }
-                    // Deleting 'bell' symbols
-                    appendingText = appendingText.replaceAll("\u0007", "");
-                    // Deleting 'backspace' pairs
-                    appendingText = appendingText.replaceAll(".\b", "");
                     textArea.append(appendingText);
                 }
             });
