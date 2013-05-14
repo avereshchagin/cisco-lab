@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xml:lang="en" lang="en">
+<ui:composition template="layout.xhtml">
+    <ui:define name="customHead">
+        <script type="text/javascript">
+            function onOver(g) {
+                g.setAttribute('width', '120');
+                g.setAttribute('height', '120');
+                g.setAttribute('transform', 'translate(-10 -10)');
+            }
+
+            function onOut(g) {
+                g.setAttribute('width', '100');
+                g.setAttribute('height', '100');
+                g.setAttribute('transform', '');
+            }
+        </script>
+    </ui:define>
+    <ui:define name="content">
+        <svg width="500" height="400" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+            <line x1="50" y1="150" x2="200" y2="50" style="stroke: rgb(0,0,0); stroke-width: 2"/>
+            <line x1="50" y1="150" x2="200" y2="250" style="stroke: rgb(0,0,0); stroke-width: 2"/>
+            <line x1="200" y1="50" x2="400" y2="50" style="stroke: rgb(0,0,0); stroke-width: 2"/>
+            <line x1="200" y1="250" x2="400" y2="250" style="stroke: rgb(0,0,0); stroke-width: 2"/>
+
+            <image x="0" y="100" width="100" height="100" xlink:href="images/router.svg"
+                   onclick="window.open('console/console.jsp');" onmouseover="onOver(this);" onmouseout="onOut(this);"/>
+            <text x="45" y="120">P</text>
+            <image x="150" y="0" width="100" height="100" xlink:href="images/router.svg"
+                   onclick="window.open('console/console.jsp');" onmouseover="onOver(this);" onmouseout="onOut(this);"/>
+            <text x="195" y="20">P1</text>
+            <image x="150" y="200" width="100" height="100" xlink:href="images/router.svg"
+                   onclick="window.open('console/console.jsp');" onmouseover="onOver(this);" onmouseout="onOut(this);"/>
+            <text x="195" y="220">P2</text>
+            <image x="350" y="0" width="100" height="100" xlink:href="images/router.svg"
+                   onclick="window.open('console/console.jsp');" onmouseover="onOver(this);" onmouseout="onOut(this);"/>
+            <text x="390" y="20">PE11</text>
+            <image x="350" y="200" width="100" height="100" xlink:href="images/router.svg"
+                   onclick="window.open('console/console.jsp');" onmouseover="onOver(this);" onmouseout="onOut(this);"/>
+            <text x="390" y="220">PE12</text>
+        </svg>
+    </ui:define>
+</ui:composition>
+</html>
