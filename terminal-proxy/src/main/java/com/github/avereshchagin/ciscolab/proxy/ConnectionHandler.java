@@ -1,19 +1,21 @@
-package com.github.avereshchagin.ciscolab;
+package com.github.avereshchagin.ciscolab.proxy;
 
+import com.github.avereshchagin.ciscolab.util.PortDispatcher;
 import gnu.io.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.TooManyListenersException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ConnectionHandler implements Runnable, SerialPortEventListener {
 
-    private static final int PORT_OPEN_TIMEOUT = 2000;
-    private static final int PORT_SPEED = 9600;
     private static final int BUFFER_SIZE = 10240;
+
+    private static final Logger LOGGER = Logger.getLogger(ConnectionHandler.class.getName());
 
     private final Socket socket;
     private final InputStream in;
@@ -21,27 +23,10 @@ public class ConnectionHandler implements Runnable, SerialPortEventListener {
     private InputStream portIn;
 
     public ConnectionHandler(Socket socket) throws IOException {
-        System.out.println("Accepted connection from " + socket.getInetAddress());
+        LOGGER.info("Accepted connection from " + socket.getInetAddress());
         this.socket = socket;
         this.in = socket.getInputStream();
         this.out = socket.getOutputStream();
-    }
-
-    private SerialPort initPort(String portName) {
-        try {
-            CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-            if (!portIdentifier.isCurrentlyOwned()) {
-                CommPort commPort = portIdentifier.open(getClass().getName(), PORT_OPEN_TIMEOUT);
-                if (commPort instanceof SerialPort) {
-                    SerialPort serialPort = (SerialPort) commPort;
-                    serialPort.setSerialPortParams(PORT_SPEED, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-                    return serialPort;
-                }
-            }
-        } catch (NoSuchPortException | PortInUseException | UnsupportedCommOperationException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     @Override
@@ -55,19 +40,19 @@ public class ConnectionHandler implements Runnable, SerialPortEventListener {
                 len = portIn.read(data);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "serialEvent", e);
         }
     }
 
     @Override
     public void run() {
-        SerialPort port = initPort("/dev/ttyS0");
+        final String name = "/dev/ttyS0";
+        SerialPort port = PortDispatcher.INSTANCE.requestPort(name);
         if (port == null) {
             try {
-                out.write("Unable to open console port.\n".getBytes());
                 socket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "run", e);
             }
             return;
         }
@@ -91,16 +76,19 @@ public class ConnectionHandler implements Runnable, SerialPortEventListener {
                     portOut.flush();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "run", e);
             }
 
             // Closing the port
             port.removeEventListener();
             portOut.close();
             portIn.close();
-            PortCloser.close(port);
+            out.close();
+            in.close();
         } catch (IOException | TooManyListenersException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "run", e);
+        } finally {
+            PortDispatcher.INSTANCE.closePort(name);
         }
     }
 }
