@@ -4,9 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 
-public class AppletClient extends JApplet {
+public class AppletUI extends JApplet {
 
-    private TelnetPanel telnetPanel;
+    private ConsolePanel consolePanel;
 
     @Override
     public void init() {
@@ -20,8 +20,8 @@ public class AppletClient extends JApplet {
 
         final Container container;
         if (hostName != null && port > 0) {
-            telnetPanel = new TelnetPanel(hostName, port);
-            container = telnetPanel;
+            consolePanel = new ConsolePanel(hostName, port);
+            container = consolePanel;
         } else {
             container = new JLabel("<html><span color=\"#ff0000\">Error: Invalid applet parameters</span>");
         }
@@ -33,7 +33,9 @@ public class AppletClient extends JApplet {
                     setContentPane(container);
                 }
             });
-        } catch (InterruptedException | InvocationTargetException e) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
     }
@@ -41,8 +43,8 @@ public class AppletClient extends JApplet {
     @Override
     public void destroy() {
         super.destroy();
-        if (telnetPanel != null) {
-            telnetPanel.onAppletDestroy();
+        if (consolePanel != null) {
+            consolePanel.onDestroy();
         }
     }
 }

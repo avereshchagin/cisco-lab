@@ -1,6 +1,8 @@
 package com.github.avereshchagin.ciscolab;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TelnetClient extends Thread {
+public class TerminalClient extends Thread {
 
     private static final int BUFFER_SIZE = 10240;
 
@@ -23,7 +25,7 @@ public class TelnetClient extends Thread {
 
     private AtomicBoolean active = new AtomicBoolean(false);
 
-    public TelnetClient(JTextArea textArea, String hostName, int port) {
+    public TerminalClient(JTextArea textArea, String hostName, int port) {
         this.textArea = textArea;
         this.hostName = hostName;
         this.port = port;
@@ -76,17 +78,18 @@ public class TelnetClient extends Thread {
     }
 
     private static Pair<String, Integer> preprocessText(String source) {
-        int shift = 0;
+        int shiftLeft = 0;
         int pos = 0;
         char[] result = new char[source.length()];
         for (int i = 0; i < source.length(); i++) {
             char ch = source.charAt(i);
             if (ch == '\u0007') {
+                Toolkit.getDefaultToolkit().beep();
                 continue;
             }
             if (ch == '\b') {
                 if (pos == 0) {
-                    shift--;
+                    shiftLeft++;
                 } else {
                     pos--;
                 }
@@ -95,7 +98,7 @@ public class TelnetClient extends Thread {
             result[pos] = ch;
             pos++;
         }
-        return new Pair<String, Integer>(String.copyValueOf(result, 0, pos), shift);
+        return new Pair<String, Integer>(String.copyValueOf(result, 0, pos), shiftLeft);
     }
 
     private void appendText(final String text) {
@@ -106,16 +109,28 @@ public class TelnetClient extends Thread {
                 public void run() {
                     Pair<String, Integer> p = preprocessText(text);
                     String appendingText = p.getFirst();
-                    int shift = p.getSecond();
-                    if (shift < 0) {
+                    int shiftLeft = p.getSecond();
+                    if (shiftLeft > 0) {
+                        try {
+                            textArea.setCaretPosition(textArea.getLineEndOffset(textArea.getLineCount() - 1));
+                        } catch (BadLocationException e) {
+                            e.printStackTrace();
+                        }
                         int position = textArea.getCaretPosition();
-                        textArea.setCaretPosition(position + shift);
-                        textArea.replaceRange("", position + shift, position);
+                        textArea.setCaretPosition(position - shiftLeft);
+                        textArea.replaceRange("", position - shiftLeft, position);
                     }
                     textArea.append(appendingText);
+                    try {
+                        textArea.setCaretPosition(textArea.getLineEndOffset(textArea.getLineCount() - 1));
+                    } catch (BadLocationException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
-        } catch (InterruptedException | InvocationTargetException e) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
     }

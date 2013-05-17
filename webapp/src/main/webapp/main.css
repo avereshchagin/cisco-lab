@@ -1,0 +1,21 @@
+.form {
+    margin: auto auto;
+    width: 250px;
+}
+
+.form .item {
+    height: 30px;
+}
+
+.form .label {
+    float: left;
+    width: 90px;
+    padding-right: 10px;
+    text-align: right;
+}
+
+.form .field {
+    display: block;
+    margin-left: 100px;
+    width: 150px;
+}

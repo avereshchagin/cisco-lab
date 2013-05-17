@@ -30,18 +30,25 @@
         <title>IBTS Cisco Lab</title>
         <vendor>Aleksandr Vereshchagin</vendor>
     </information>
-    <!--<security>-->
-    <!--<all-permissions/>-->
-    <!--</security>-->
+    <security>
+        <all-permissions/>
+    </security>
     <resources>
-        <j2se version="1.7+"/>
+        <j2se version="1.6+"/>
         <jar href="applet-client.jar" main="true"/>
     </resources>
+    <!--
     <applet-desc name="applet-client"
-                 main-class="com.github.avereshchagin.ciscolab.AppletClient"
-                 width="600"
+                 main-class="com.github.avereshchagin.ciscolab.AppletUI               width="600"
                  height="400">
         <param name="hostname" value="<%=ip%>"/>
         <param name="port" value="<%=port%>"/>
     </applet-desc>
+    -->
+    <application-desc
+            name="Applet Client"
+            main-class="com.github.avereshchagin.ciscolab.Main"
+            width="600"
+            height="400">
+    </application-desc>
 </jnlp>
