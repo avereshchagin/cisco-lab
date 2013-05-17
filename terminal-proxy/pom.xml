@@ -79,6 +79,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>applet-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.bidib.jbidib.org.qbang.rxtx</groupId>
             <artifactId>rxtxcomm</artifactId>
             <version>2.2</version>
@@ -89,6 +94,11 @@
             <artifactId>jax-rs-ri</artifactId>
             <version>1.17.1</version>
             <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.17.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>

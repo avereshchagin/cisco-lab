@@ -17,10 +17,17 @@ public class AppletUI extends JApplet {
         } catch (NumberFormatException e) {
             port = 0;
         }
+        String accessToken = getParameter("accessToken");
+        int deviceId;
+        try {
+            deviceId = Integer.parseInt(getParameter("deviceId"));
+        } catch (NumberFormatException e) {
+            deviceId = 0;
+        }
 
         final Container container;
         if (hostName != null && port > 0) {
-            consolePanel = new ConsolePanel(hostName, port);
+            consolePanel = new ConsolePanel(hostName, port, new ConnectionParameters(accessToken, deviceId));
             container = consolePanel;
         } else {
             container = new JLabel("<html><span color=\"#ff0000\">Error: Invalid applet parameters</span>");

@@ -1,11 +1,15 @@
 package com.github.avereshchagin.ciscolab.proxy;
 
+import com.github.avereshchagin.ciscolab.ConnectionParameters;
 import com.github.avereshchagin.ciscolab.util.PortDispatcher;
-import gnu.io.*;
+import com.google.gson.Gson;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
@@ -16,6 +20,8 @@ public class ConnectionHandler implements Runnable, SerialPortEventListener {
     private static final int BUFFER_SIZE = 10240;
 
     private static final Logger LOGGER = Logger.getLogger(ConnectionHandler.class.getName());
+
+    private static final Gson GSON = new Gson();
 
     private final Socket socket;
     private final InputStream in;
@@ -44,10 +50,40 @@ public class ConnectionHandler implements Runnable, SerialPortEventListener {
         }
     }
 
+    private String getPortName() {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            ConnectionParameters parameters = GSON.fromJson(reader.readLine(), ConnectionParameters.class);
+            if (parameters != null) {
+                Client client = Client.create();
+                WebResource resource = client.resource("http://192.168.30.5:8080/webapp/api/getPortName");
+                String response = resource.
+                        queryParam("accessToken", parameters.getAccessToken()).
+                        queryParam("deviceId", String.valueOf(parameters.getDeviceId())).
+                        get(String.class);
+                String portName = GSON.fromJson(response, String.class);
+                String result = "OK\n";
+                if (portName == null || portName.isEmpty()) {
+                    result = "FAIL\n";
+                    portName = null;
+                }
+                out.write(result.getBytes());
+                out.flush();
+                return portName;
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "getPortName", e);
+        }
+        return null;
+    }
+
     @Override
     public void run() {
-        final String name = "/dev/ttyS0";
-        SerialPort port = PortDispatcher.INSTANCE.requestPort(name);
+        SerialPort port = null;
+        final String name = getPortName();
+        if (name != null) {
+            port = PortDispatcher.INSTANCE.requestPort(name);
+        }
         if (port == null) {
             try {
                 socket.close();

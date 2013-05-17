@@ -1,12 +1,11 @@
 package com.github.avereshchagin.ciscolab;
 
+import com.google.gson.Gson;
+
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,6 +17,7 @@ public class TerminalClient extends Thread {
     private final JTextArea textArea;
     private final String hostName;
     private final int port;
+    private final ConnectionParameters parameters;
 
     private Socket socket;
     private InputStream remoteIn;
@@ -25,10 +25,11 @@ public class TerminalClient extends Thread {
 
     private AtomicBoolean active = new AtomicBoolean(false);
 
-    public TerminalClient(JTextArea textArea, String hostName, int port) {
+    public TerminalClient(JTextArea textArea, String hostName, int port, ConnectionParameters parameters) {
         this.textArea = textArea;
         this.hostName = hostName;
         this.port = port;
+        this.parameters = parameters;
     }
 
     @Override
@@ -45,6 +46,29 @@ public class TerminalClient extends Thread {
         }
 
         appendText("Connected.\n");
+
+        boolean accessGained = false;
+        Gson gson = new Gson();
+        String serialized = gson.toJson(parameters) + '\n';
+        try {
+            remoteOut.write(serialized.getBytes());
+            remoteOut.flush();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(remoteIn));
+            String response = reader.readLine();
+            if ("OK".equals(response)) {
+                accessGained = true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (!accessGained) {
+            appendText("Access denied to the device #" + parameters.getDeviceId() +
+                    ". Make sure you have a valid session.\n");
+            try {
+                socket.close();
+            } catch (IOException ignored) {
+            }
+        }
         active.compareAndSet(false, true);
 
         byte[] data = new byte[BUFFER_SIZE];

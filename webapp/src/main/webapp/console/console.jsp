@@ -16,6 +16,8 @@
         }
     }
     String port = "8338";
+    String accessToken = "accessToken";
+    int deviceId = 1;
 
     // generating response
     response.setContentType("application/x-java-jnlp-file");
@@ -25,7 +27,7 @@
     response.addDateHeader("Last-Modified", Calendar.getInstance().getTime().getTime());
 %>
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://<%=ip%>:8080/webapp/console" href="console.jsp">
+<jnlp spec="1.0+" codebase="http://<%=ip%>:8080/webapp/console">
     <information>
         <title>IBTS Cisco Lab</title>
         <vendor>Aleksandr Vereshchagin</vendor>
@@ -37,18 +39,14 @@
         <j2se version="1.6+"/>
         <jar href="applet-client.jar" main="true"/>
     </resources>
-    <!--
-    <applet-desc name="applet-client"
-                 main-class="com.github.avereshchagin.ciscolab.AppletUI               width="600"
-                 height="400">
-        <param name="hostname" value="<%=ip%>"/>
-        <param name="port" value="<%=port%>"/>
-    </applet-desc>
-    -->
     <application-desc
             name="Applet Client"
             main-class="com.github.avereshchagin.ciscolab.Main"
             width="600"
             height="400">
+        <argument><%=ip%></argument>
+        <argument><%=port%></argument>
+        <argument><%=accessToken%></argument>
+        <argument><%=deviceId%></argument>
     </application-desc>
 </jnlp>

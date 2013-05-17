@@ -54,7 +54,7 @@ public class ConsolePanel extends JPanel implements KeyListener {
         }
     }
 
-    public ConsolePanel(String hostName, int port) {
+    public ConsolePanel(String hostName, int port, ConnectionParameters parameters) {
         super(new BorderLayout());
         textArea = new JTextArea();
         textArea.setLineWrap(false);
@@ -77,7 +77,7 @@ public class ConsolePanel extends JPanel implements KeyListener {
         textArea.addKeyListener(this);
         textArea.requestFocus();
 
-        terminalClient = new TerminalClient(textArea, hostName, port);
+        terminalClient = new TerminalClient(textArea, hostName, port, parameters);
         terminalClient.start();
     }
 
