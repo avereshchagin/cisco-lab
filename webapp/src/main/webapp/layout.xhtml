@@ -9,24 +9,28 @@
 
 <head>
     <title>IBTS Remote Labs</title>
-    <link rel="stylesheet" type="text/css" href="main.css"/>
+    <link rel="stylesheet" type="text/css" href="images/main.css"/>
+    <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/jquery.form.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
     <ui:insert name="customHead"/>
 </head>
 
 <body>
-    <div style="margin: auto auto; width: 1000px">
-        <div style="position: relative; width: 1000px; height: 150px; background-image: url('images/logo.png');">
-            <div style="position: absolute; right: 40px; bottom: 20px;">
-                Aleksandr Vereshchagin [student] Sign Out
-            </div>
-        </div>
-        <div style="float: left; border: 1px solid #000; width: 200px; height: 300px;">
-            Menu
-        </div>
-        <div style="margin-left: 200px; border: 1px solid #000; padding: 30px">
-            <ui:insert name="content"/>
-        </div>
+<div id="page">
+    <div id="logo">
+        <div id="me"></div>
     </div>
+    <div class="menu">
+        <a class="menuitem" href="index.xhtml">Main page</a>
+        <a class="menuitem" href="viewLab.xhtml">Topology</a>
+        <a class="menuitem" href="#">Settings</a>
+    </div>
+    <div id="content">
+        <ui:insert name="content"/>
+    </div>
+</div>
 </body>
 
 </html>
