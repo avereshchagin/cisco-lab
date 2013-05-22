@@ -13,6 +13,8 @@ public class RestApplication extends Application {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(RestApi.class);
         classes.add(UserBean.class);
+        classes.add(RackResource.class);
+        classes.add(DeviceResource.class);
         return classes;
     }
 }

@@ -18,7 +18,6 @@
 .menu {
     float: left;
     width: 200px;
-    height: 300px;
 }
 
 .menu a {
@@ -108,4 +107,46 @@
 #submitButton {
     text-align: right;
     margin-top: 5px;
+}
+
+table {
+    border-collapse: collapse;
+    font-size: 10pt;
+}
+
+table, th, td {
+    border: 1px solid #333;
+}
+
+th {
+    background-color: #777;
+    color: #fff;
+}
+
+#rackData #name {
+    width: 100px;
+}
+
+#rackData #localIP {
+    width: 100px;
+}
+
+#rackData #localTerminalPort {
+    width: 70px;
+}
+
+#rackData #localControlPort {
+    width: 70px;
+}
+
+#rackData #externalIP {
+    width: 100px;
+}
+
+#rackData #externalTerminalPort {
+    width: 70px;
+}
+
+#rackData #externalControlPort {
+    width: 70px;
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xml:lang="en" lang="en">
+<ui:composition template="layout.xhtml">
+    <ui:define name="customHead">
+        <script type="text/javascript" src="js/settings.js"></script>
+    </ui:define>
+    <ui:define name="content">
+        <table id="rackTable" border="1">
+            <thead>
+            <tr>
+                <th style="width: 100px;">Rack Name</th>
+                <th style="width: 100px;">Local IP</th>
+                <th style="width: 70px;">Local Terminal Port</th>
+                <th style="width: 70px;">Local Control Port</th>
+                <th style="width: 100px;">External IP</th>
+                <th style="width: 70px;">External Terminal Port</th>
+                <th style="width: 70px;">External Control Port</th>
+                <th style="width: 150px;"></th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+        <a id="addRack" href="#">Add Rack</a>
+        <table id="deviceTable" border="1">
+            <thead>
+            <tr>
+                <th style="width: 100px;">Device Name</th>
+                <th style="width: 100px;">Rack</th>
+                <th style="width: 100px;">Path</th>
+                <th style="width: 150px;"></th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+        <a id="addDevice" href="#">Add Device</a>
+    </ui:define>
+</ui:composition>
+</html>
