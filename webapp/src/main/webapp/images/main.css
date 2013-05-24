@@ -15,25 +15,25 @@
     padding: 30px
 }
 
-.menu {
+#menu {
     float: left;
     width: 200px;
 }
 
-.menu a {
+#menu a {
     display: block;
     text-align: right;
     padding: 5px;
     padding-right: 15px;
 }
 
-.menu a:link, .menu a:visited {
+#menu a:link, #menu a:visited {
     background-color: #448;
     color: #fff;
     text-decoration: none;
 }
 
-.menu a:active, .menu a:hover {
+#menu a:active, #menu a:hover {
     background-color: #333;
     color: #f71;
 }

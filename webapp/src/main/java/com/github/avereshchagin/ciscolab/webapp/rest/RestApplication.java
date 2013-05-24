@@ -15,6 +15,7 @@ public class RestApplication extends Application {
         classes.add(UserBean.class);
         classes.add(RackResource.class);
         classes.add(DeviceResource.class);
+        classes.add(MenuResource.class);
         return classes;
     }
 }

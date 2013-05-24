@@ -1,8 +1,9 @@
-$(document).ready(function () {
-    $.getJSON('api/user/me', function onSuccess(user) {
+$(function () {
+    $.getJSON('api/user/me', function (user) {
         if (user) {
-            $('#me').text(user.displayName + ' [' + user.type.toLowerCase() + '] ');
-            $('#me').append(
+            var $me = $('#me');
+            $me.text(user.displayName + ' [' + user.type.toLowerCase() + '] ');
+            $me.append(
                 $('<a>', {
                     text: 'Sign out',
                     href: '#',
@@ -19,5 +20,15 @@ $(document).ready(function () {
             });
             return false;
         }
+    });
+
+    $.getJSON('api/menu', function (items) {
+        var $menu = $('#menu');
+        $.each(items, function (index, item) {
+            $menu.append($('<a>', {
+                text: item[0],
+                href: item[1]
+            }));
+        });
     });
 });
