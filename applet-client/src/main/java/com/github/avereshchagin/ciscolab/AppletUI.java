@@ -3,6 +3,8 @@ package com.github.avereshchagin.ciscolab;
 import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AppletUI extends JApplet {
 
@@ -17,17 +19,18 @@ public class AppletUI extends JApplet {
         } catch (NumberFormatException e) {
             port = 0;
         }
-        String accessToken = getParameter("accessToken");
-        int deviceId;
-        try {
-            deviceId = Integer.parseInt(getParameter("deviceId"));
-        } catch (NumberFormatException e) {
-            deviceId = 0;
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("accessToken", getParameter("accessToken"));
+        String deviceId = getParameter("deviceId");
+        if (deviceId != null && deviceId.matches("\\d+")) {
+            parameters.put("deviceId", deviceId);
+        } else {
+            parameters.put("deviceId", "0");
         }
 
         final Container container;
         if (hostName != null && port > 0) {
-            consolePanel = new ConsolePanel(hostName, port, new ConnectionParameters(accessToken, deviceId));
+            consolePanel = new ConsolePanel(hostName, port, parameters);
             container = consolePanel;
         } else {
             container = new JLabel("<html><span color=\"#ff0000\">Error: Invalid applet parameters</span>");

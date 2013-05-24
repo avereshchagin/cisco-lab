@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
+import java.util.Map;
 
 public class ConsolePanel extends JPanel implements KeyListener {
 
@@ -54,7 +55,7 @@ public class ConsolePanel extends JPanel implements KeyListener {
         }
     }
 
-    public ConsolePanel(String hostName, int port, ConnectionParameters parameters) {
+    public ConsolePanel(String hostName, int port, Map<String, String> parameters) {
         super(new BorderLayout());
         textArea = new JTextArea();
         textArea.setLineWrap(false);

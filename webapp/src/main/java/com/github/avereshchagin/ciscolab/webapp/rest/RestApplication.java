@@ -11,11 +11,11 @@ public class RestApplication extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
-        classes.add(RestApi.class);
         classes.add(UserBean.class);
         classes.add(RackResource.class);
         classes.add(DeviceResource.class);
         classes.add(MenuResource.class);
+        classes.add(JnlpResource.class);
         return classes;
     }
 }

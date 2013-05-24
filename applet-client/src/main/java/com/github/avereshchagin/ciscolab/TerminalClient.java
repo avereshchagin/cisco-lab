@@ -8,6 +8,7 @@ import java.awt.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TerminalClient extends Thread {
@@ -17,7 +18,7 @@ public class TerminalClient extends Thread {
     private final JTextArea textArea;
     private final String hostName;
     private final int port;
-    private final ConnectionParameters parameters;
+    private final Map<String, String> parameters;
 
     private Socket socket;
     private InputStream remoteIn;
@@ -25,7 +26,7 @@ public class TerminalClient extends Thread {
 
     private AtomicBoolean active = new AtomicBoolean(false);
 
-    public TerminalClient(JTextArea textArea, String hostName, int port, ConnectionParameters parameters) {
+    public TerminalClient(JTextArea textArea, String hostName, int port, Map<String, String> parameters) {
         this.textArea = textArea;
         this.hostName = hostName;
         this.port = port;
@@ -62,7 +63,7 @@ public class TerminalClient extends Thread {
             e.printStackTrace();
         }
         if (!accessGained) {
-            appendText("Access denied to the device #" + parameters.getDeviceId() +
+            appendText("Access denied to the device #" + parameters.get("deviceId") +
                     ". Make sure you have a valid session.\n");
             try {
                 socket.close();

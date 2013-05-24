@@ -1,8 +1,8 @@
 package com.github.avereshchagin.ciscolab.proxy;
 
-import com.github.avereshchagin.ciscolab.ConnectionParameters;
 import com.github.avereshchagin.ciscolab.util.PortDispatcher;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import gnu.io.SerialPort;
@@ -10,7 +10,9 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.Socket;
+import java.util.Map;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,26 +52,50 @@ public class ConnectionHandler implements Runnable, SerialPortEventListener {
         }
     }
 
+    private class Rack {
+        private Long id;
+        private String name;
+        private String localIP;
+        private Integer localTerminalPort;
+        private Integer localControlPort;
+        private String externalIP;
+        private Integer externalTerminalPort;
+        private Integer externalControlPort;
+    }
+
+    private class Device {
+        private Long id;
+        private Rack rack;
+        private String name;
+        private String path;
+    }
+
     private String getPortName() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            ConnectionParameters parameters = GSON.fromJson(reader.readLine(), ConnectionParameters.class);
+            Type mapType = new TypeToken<Map<String, String>>() {
+            }.getType();
+            Map<String, String> parameters = GSON.fromJson(reader.readLine(), mapType);
             if (parameters != null) {
                 Client client = Client.create();
-                WebResource resource = client.resource("http://192.168.30.5:8080/webapp/api/getPortName");
-                String response = resource.
-                        queryParam("accessToken", parameters.getAccessToken()).
-                        queryParam("deviceId", String.valueOf(parameters.getDeviceId())).
-                        get(String.class);
-                String portName = GSON.fromJson(response, String.class);
-                String result = "OK\n";
-                if (portName == null || portName.isEmpty()) {
-                    result = "FAIL\n";
-                    portName = null;
+                WebResource resource = client.resource("http://192.168.30.5:8080/api/device");
+                String deviceId = parameters.get("deviceId");
+                if (deviceId != null && deviceId.matches("\\d+")) {
+                    String response = resource
+                            .path(deviceId)
+                            .queryParam("accessToken", parameters.get("accessToken"))
+                            .get(String.class);
+                    Device device = GSON.fromJson(response, Device.class);
+                    String portName = device != null ? device.path : null;
+                    String result = "OK\n";
+                    if (portName == null || portName.isEmpty()) {
+                        result = "FAIL\n";
+                        portName = null;
+                    }
+                    out.write(result.getBytes());
+                    out.flush();
+                    return portName;
                 }
-                out.write(result.getBytes());
-                out.flush();
-                return portName;
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "getPortName", e);
