@@ -1,19 +1,36 @@
 $(document).ready(function () {
+    function pingRack(id) {
+        if (id) {
+            $.getJSON('api/rack/ping/' + id, function (status) {
+                if (status && status === 'online') {
+                    $('#status' + id).attr('data', 'images/online.svg');
+                } else {
+                    $('#status' + id).attr('data', 'images/offline.svg');
+                }
+            });
+        }
+    }
+
     function loadRackData() {
         $.getJSON('api/rack', function (racks) {
-            var tbody = $('#rackTable').find('tbody');
-            tbody.empty();
+            var $tbody = $('#rackTable').find('tbody');
+            $tbody.empty();
             $.each(racks, function (index, rack) {
-                var tr = $('<tr>');
-                $('<td>', {text: rack.name}).appendTo(tr);
-                $('<td>', {text: rack.localIP}).appendTo(tr);
-                $('<td>', {text: rack.localTerminalPort}).appendTo(tr);
-                $('<td>', {text: rack.localControlPort}).appendTo(tr);
-                $('<td>', {text: rack.externalIP}).appendTo(tr);
-                $('<td>', {text: rack.externalTerminalPort}).appendTo(tr);
-                $('<td>', {text: rack.externalControlPort}).appendTo(tr);
-                tr.append(createLinksCell('api/rack/', rack.id, loadRackData));
-                tbody.append(tr);
+                var $tr = $('<tr>');
+                var $tdName = $('<td>');
+                $tdName.append($('<object>', {type: 'image/svg+xml', id: 'status' + rack.id}));
+                $tdName.append(rack.name);
+                $tr.append($tdName);
+                $('<td>', {text: rack.localIP}).appendTo($tr);
+                $('<td>', {text: rack.localTerminalPort}).appendTo($tr);
+                $('<td>', {text: rack.localControlPort}).appendTo($tr);
+                $('<td>', {text: rack.externalIP}).appendTo($tr);
+                $('<td>', {text: rack.externalTerminalPort}).appendTo($tr);
+                $('<td>', {text: rack.externalControlPort}).appendTo($tr);
+                $tr.append(createLinksCell('api/rack/', rack.id, loadRackData));
+                $tbody.append($tr);
+
+                pingRack(rack.id);
             });
         });
         loadDeviceData();
@@ -21,15 +38,26 @@ $(document).ready(function () {
 
     function loadDeviceData() {
         $.getJSON('api/device', function (devices) {
-            var tbody = $('#deviceTable').find('tbody');
-            tbody.empty();
+            var $tbody = $('#deviceTable').find('tbody');
+            $tbody.empty();
             $.each(devices, function (index, device) {
-                var tr = $('<tr>');
-                $('<td>', {text: device.name}).appendTo(tr);
-                $('<td>', {text: device.rack ? device.rack.name : ''}).appendTo(tr);
-                $('<td>', {text: device.path}).appendTo(tr);
-                tr.append(createLinksCell('api/device/', device.id, loadDeviceData));
-                tbody.append(tr);
+                var $tr = $('<tr>');
+                $('<td>', {text: device.name}).appendTo($tr);
+                $('<td>', {text: device.rack ? device.rack.name : ''}).appendTo($tr);
+                $('<td>', {text: device.path}).appendTo($tr);
+                var $tdLinks = $('<td>');
+                $tdLinks.append($('<a>', {
+                    href: '#',
+                    text: "Delete",
+                    click: getDelete('api/device/' + device.id, loadDeviceData)
+                }));
+                $tdLinks.append(' ');
+                $tdLinks.append($('<a>', {
+                    href: 'api/jnlp/console' + device.id + '.jnlp',
+                    text: 'Open terminal'
+                }));
+                $tr.append($tdLinks);
+                $tbody.append($tr);
             });
         });
     }

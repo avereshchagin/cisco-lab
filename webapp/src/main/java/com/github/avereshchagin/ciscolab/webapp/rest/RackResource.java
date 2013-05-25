@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +28,8 @@ import java.util.List;
 public class RackResource {
 
     private static final Gson GSON = new Gson();
+
+    private static final Client CLIENT = Client.create();
 
     @PersistenceContext(unitName = "IBTSRemoteLabPU")
     private EntityManager em;
@@ -40,8 +43,7 @@ public class RackResource {
 
     private void addRackDevices(Rack rack) {
         try {
-            Client client = Client.create();
-            WebResource resource = client.resource(String.format("http://%s:%d/availablePorts",
+            WebResource resource = CLIENT.resource(String.format("http://%s:%d/availablePorts",
                     rack.getLocalIP(), rack.getLocalControlPort()));
             String response = resource.get(String.class);
             Type collectionType = new TypeToken<Collection<String>>(){}.getType();
@@ -60,7 +62,7 @@ public class RackResource {
 
     @POST
     public void add(String json,
-                      @Context HttpServletRequest request) {
+                    @Context HttpServletRequest request) {
         try {
             Rack rack = GSON.fromJson(json, Rack.class);
             em.persist(rack);
@@ -82,5 +84,21 @@ public class RackResource {
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
+    }
+
+    @GET
+    @Path("ping/{rackId}")
+    public Response ping(@PathParam("rackId") Long rackId) {
+        String status = "offline";
+        try {
+            Rack rack = em.find(Rack.class, rackId);
+            WebResource resource = CLIENT.resource(String.format("http://%s:%d/ping",
+                    rack.getLocalIP(), rack.getLocalControlPort()));
+            resource.get(String.class);
+            status = "online";
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        return Response.ok().entity(GSON.toJson(status)).build();
     }
 }

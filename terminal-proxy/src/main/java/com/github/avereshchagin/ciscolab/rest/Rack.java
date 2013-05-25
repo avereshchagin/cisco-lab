@@ -11,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,13 +22,14 @@ public class Rack extends Thread {
 
     private static final Logger LOGGER = Logger.getLogger(Rack.class.getName());
 
+    private static final Gson GSON = new Gson();
+
     @GET
     @Path("availablePorts")
     @Produces(MediaType.APPLICATION_JSON)
     public String availablePorts() {
         List<String> ports = CommPortUtils.listAvailablePorts();
-        Gson gson = new Gson();
-        return gson.toJson(ports);
+        return GSON.toJson(ports);
     }
 
     @GET
@@ -38,6 +40,14 @@ public class Rack extends Thread {
             PortDispatcher.INSTANCE.closePort(name);
         }
         return "";
+    }
+
+    @GET
+    @Path("ping")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response ping() {
+        LOGGER.info("ping");
+        return Response.ok().entity(GSON.toJson("ok")).build();
     }
 
     @Override
