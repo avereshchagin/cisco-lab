@@ -1,8 +1,9 @@
 $(function () {
-    $.ajax('api/lab/topology', {
+    var $topology = $('#topology');
+    var id = $topology.data('id');
+    $.ajax('api/lab/topology/' + id, {
         success: function (svg) {
             var length = $(svg).find('image').length;
-            var $topology = $('#topology');
             $topology.append($(svg).find('svg'));
             waitElements($topology, 'image', length, function () {
                 var $devices = $('.device');

@@ -8,10 +8,17 @@
       xml:lang="en" lang="en">
 <ui:composition template="layout.xhtml">
     <ui:define name="customHead">
-        <script type="text/javascript" src="js/topology.js"></script>
+        <script type="text/javascript" src="js/createLab.js"></script>
     </ui:define>
     <ui:define name="content">
-        <div id="topology" style="text-align: center;" data-id="#{param.id}"></div>
+        <form id="createLabForm" action="api/lab" method="post">
+            Name:<br/>
+            <input type="text" name="name"/><br/>
+            Generate <input type="text" style="width: 20px;" name="capacity"/> students.<br/>
+            Layout:<br/>
+            <textarea name="layout" rows="10" cols="50"/><br/>
+            <input type="submit" value="Create"/>
+        </form>
     </ui:define>
 </ui:composition>
 </html>

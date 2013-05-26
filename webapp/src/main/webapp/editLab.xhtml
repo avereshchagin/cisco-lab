@@ -8,10 +8,21 @@
       xml:lang="en" lang="en">
 <ui:composition template="layout.xhtml">
     <ui:define name="customHead">
-        <script type="text/javascript" src="js/topology.js"></script>
+        <script type="text/javascript" src="js/editLab.js"></script>
     </ui:define>
     <ui:define name="content">
-        <div id="topology" style="text-align: center;" data-id="#{param.id}"></div>
+        <div id="labId" data-id="#{param.id}"></div>
+        Name: <span id="labName"/><br/>
+        Trainer: <br/>
+        <table id="labTrainer">
+            <tbody>
+            </tbody>
+        </table>
+        Students: <br/>
+        <table id="labStudents">
+            <tbody>
+            </tbody>
+        </table>
     </ui:define>
 </ui:composition>
 </html>

@@ -1,28 +1,42 @@
 package com.github.avereshchagin.ciscolab.webapp.jpa;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "users")
-@NamedQuery(name = "verifyUser", query = "SELECT u FROM User u WHERE u.login = :login AND u.password = :password")
-public class User {
+@SecondaryTable(name = "access_tokens")
+@Inheritance(strategy = InheritanceType.JOINED)
+@NamedQueries({
+        @NamedQuery(name = "User.verify", query = "SELECT u FROM User u WHERE u.login = :login AND u.password = :password"),
+        @NamedQuery(name = "User.find", query = "SELECT u FROM User u WHERE u.login = :login")
+})
+public abstract class User {
 
+    @Expose
     @Id
     @GeneratedValue
     private Long id;
 
+    @Expose
     @Column(nullable = false, updatable = false, unique = true, length = 16)
     private String login;
 
+    @Expose
     @Column(nullable = false, length = 16)
     private String password;
 
+    @Expose
     @Column(nullable = false, length = 32)
     private String displayName;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserType type;
+    @Column(table = "access_tokens", nullable = true, length = 32)
+    private String accessToken;
+
+    @Column(table = "access_tokens", nullable = true)
+    private Date accessTokenExpires;
 
     public Long getId() {
         return id;
@@ -56,11 +70,19 @@ public class User {
         this.displayName = displayName;
     }
 
-    public UserType getType() {
-        return type;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setType(UserType type) {
-        this.type = type;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public Date getAccessTokenExpires() {
+        return accessTokenExpires;
+    }
+
+    public void setAccessTokenExpires(Date accessTokenExpires) {
+        this.accessTokenExpires = accessTokenExpires;
     }
 }
