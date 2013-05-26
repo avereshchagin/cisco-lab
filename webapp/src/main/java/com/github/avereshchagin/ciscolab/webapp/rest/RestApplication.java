@@ -16,6 +16,7 @@ public class RestApplication extends Application {
         classes.add(DeviceResource.class);
         classes.add(MenuResource.class);
         classes.add(JnlpResource.class);
+        classes.add(LabResource.class);
         return classes;
     }
 }

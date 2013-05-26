@@ -29,7 +29,7 @@ public class MenuResource {
         if (obj instanceof User) {
             User user = (User) obj;
             if (user.getType().equals(UserType.ADMINISTRATOR)) {
-                items.add(new String[]{"Topology", "viewLab.xhtml"});
+                items.add(new String[]{"Topology", "topology.xhtml"});
                 items.add(new String[]{"Settings", "settings.xhtml"});
             }
         }

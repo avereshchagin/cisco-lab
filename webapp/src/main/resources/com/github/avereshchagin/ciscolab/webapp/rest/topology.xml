@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<topology>
+    <device type="router" name="P" id="656" x="0" y="1"/>
+    <device type="router" name="P1" id="656" x="2" y="0"/>
+    <device type="router" name="P2" id="656" x="2" y="2"/>
+    <device type="router" name="PE11" id="656" x="4" y="0"/>
+    <device type="router" name="PE12" id="656" x="4" y="2"/>
+
+    <line from="P" to="P1"/>
+    <line from="P" to="P2"/>
+    <line from="P1" to="PE11"/>
+    <line from="P2" to="PE12"/>
+</topology>
